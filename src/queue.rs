@@ -72,19 +72,10 @@ impl<TaskType: 'static + Task + Send> WorkQueue<TaskType> {
     }
 
     // Helper methods
-    pub fn iter(&mut self) -> mpsc::Iter<TaskType::Output> {
-        self.recv_output.iter()
-    }
     pub fn recv(&mut self) -> TaskType::Output {
         self.recv_output
             .recv()
             .expect("I have been shutdown incorrectly")
-    }
-    pub fn try_recv(&mut self) -> Result<TaskType::Output, mpsc::TryRecvError> {
-        self.recv_output.try_recv()
-    }
-    pub fn recv_timeout(&self, timeout: std::time::Duration) -> Result<TaskType::Output, mpsc::RecvTimeoutError> {
-        self.recv_output.recv_timeout(timeout)
     }
 
     pub fn shutdown(&mut self) {

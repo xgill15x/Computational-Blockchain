@@ -2,7 +2,6 @@ use crate::queue::{Task, WorkQueue};
 use digest::consts::U32;
 use sha2::digest::generic_array::GenericArray;
 use sha2::{Digest, Sha256};
-// use std::fmt::Write;
 use std::sync;
 
 pub type Hash = GenericArray<u8, U32>;
@@ -37,19 +36,13 @@ impl Block {
         }
     }
 
-    pub fn hash_string_for_proof(&self, proof: u64) -> String { // hash string of the block
+    pub fn hash_string_for_proof(&self, proof: u64) -> String {
         let prev_hash_str: String = format!("{:02x}", self.prev_hash).to_lowercase();
         let generation_str: String = self.generation.to_string();
         let difficulty_str: String = self.difficulty.to_string();
         let proof_str: String = proof.to_string();
 
         format!("{}:{}:{}:{}:{}", prev_hash_str, generation_str, difficulty_str, self.data, proof_str)
-    }
-
-    pub fn hash_string(&self) -> String {
-        // self.proof.unwrap() panics if block hasn't been mined
-        let p = self.proof.unwrap();
-        self.hash_string_for_proof(p)
     }
 
     pub fn hash_for_proof(&self, proof: u64) -> Hash {  // the actual hash for the block
@@ -64,10 +57,6 @@ impl Block {
         // self.proof.unwrap() panics if block hasn't been mined
         let p = self.proof.unwrap();
         self.hash_for_proof(p)
-    }
-
-    pub fn set_proof(self: &mut Block, proof: u64) {
-        self.proof = Some(proof);
     }
 
     pub fn is_valid_for_proof(&self, proof: u64) -> bool {  // checks if hash's last `self.difficulty` bits are 0s
